@@ -42,20 +42,30 @@ const func = () => {
         let restAmount = 0;
         let today = dateFormat.format(new Date(), 'yyyy-MM-dd');
         const firstCaptionNum = Number(document.getElementsByClassName("vb-tableListCell__text")[0].id.replace(/[^0-9]/g, ''));
+        // h:i 形式のstringををDate型に変換。24:00を超える場合も補正
+        const convertDate = (timeStr) => {
+            return Number(timeStr.slice(0, 2)) < 24
+                ? new Date(`${today} ${timeStr}`)
+                : new Date(`${today} ${('0' + (Number(timeStr.slice(0, 2)) - 24)).slice(-2)}:${timeStr.slice(-2)}`);
+        }
 
         while (document.getElementsByName(`time_clocks[${time_i}].datetime`)[0]) {
             let t1_str = document.getElementsByName(`time_clocks[${time_i}].datetime`)[0].value;
-            let t1 = new Date(`${today} ${t1_str}`);
+            let t1 = convertDate(t1_str);
+
             let t2_str;
             let t2;
             if (document.getElementsByName(`time_clocks[${time_i + 1}].datetime`)[0]) {
                 t2_str = document.getElementsByName(`time_clocks[${time_i + 1}].datetime`)[0].value;
-                t2 = new Date(`${today} ${t2_str}`);
+                t2 = convertDate(t2_str);
             } else {
                 t2 = new Date();
             }
 
             let diff = t2.getTime() - t1.getTime();
+            if (diff < 0) {
+                diff += 1000 * 60 * 60 * 24; // 日付をまたいでるときはマイナスになるので1日分足す
+            }
 
             let diffMinute = Math.floor(diff / (1000 * 60));
             if (time_i % 2 === 0) {
