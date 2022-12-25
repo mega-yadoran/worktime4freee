@@ -1,0 +1,16 @@
+{
+    "name": "freee 勤務時間計算",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "description": "freee人事労務の「打刻時刻の修正」モーダルで本日の勤務合計時間・休憩合計時間を計算して表示します",
+    "content_scripts": [
+        {
+            "matches": [
+                "https://p.secure.freee.co.jp/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
